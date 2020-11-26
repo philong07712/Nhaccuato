@@ -20,13 +20,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.hippoplayer.R;
-import com.example.hippoplayer.databinding.FragmentPlayBinding;
-import com.example.hippoplayer.models.Song;
+import com.example.nhaccuato.Models.Song;
 import com.example.nhaccuato.R;
 
 import java.util.List;
-
 
 public class PlayFragment extends Fragment {
 

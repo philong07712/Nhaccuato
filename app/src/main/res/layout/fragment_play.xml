@@ -8,7 +8,7 @@
 
         <variable
             name="playViewModel"
-            type="com.example.hippoplayer.play.PlayViewModel" />
+            type="com.example.nhaccuato.play.PlayViewModel" />
 
     </data>
 
