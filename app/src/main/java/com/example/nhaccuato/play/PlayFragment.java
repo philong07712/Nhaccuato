@@ -30,10 +30,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.nhaccuato.Models.Song;
+import com.example.nhaccuato.Models.SongResponse;
 import com.example.nhaccuato.R;
 import com.example.nhaccuato.Utils.ConvertHelper;
 import com.example.nhaccuato.databinding.FragmentPlayBinding;
 
+import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
@@ -64,14 +66,12 @@ public class PlayFragment extends Fragment {
         public void onNext(List<SongResponse> songResponses) {
             for(SongResponse songResponse : songResponses){
                 Song song = new Song();
-                song.setSongResponse(songResponse);
                 mSong.add(song);
             }
             // create manager
             mMediaManager.setSongs(mSong);
             setSong();
             // this will init the singleton class notification manager
-            SongNotificationManager.getInstance().init(getContext(), mSong);
         }
 
         @Override
