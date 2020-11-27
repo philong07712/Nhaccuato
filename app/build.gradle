@@ -37,9 +37,10 @@ dependencies {
 
     // Glide
     implementation 'com.github.bumptech.glide:glide:4.11.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+    // Lottie
+    implementation 'com.airbnb.android:lottie:3.4.0'
 
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -55,6 +56,14 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
+    // Viewapger2
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
+
+    // media
+    implementation "androidx.media:media:1.1.0"
+
+    // ExoPlayer
+    implementation 'com.google.android.exoplayer:exoplayer:2.9.6'
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
