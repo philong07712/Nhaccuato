@@ -16,12 +16,16 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
 public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener {
     private static final String TAG = ExoPlayerService.class.getSimpleName();
-    private final int loadControlStartBufferMs = 1500;
+    private final int DEFAULT_MIN_BUFFER_MS = 30000;
+    private final int DEFAULT_MAX_BUFFER_MS = 60000;
+    private final int DEFAULT_BUFFER_FOR_PLAYBACK_MS = 1000;
+    private final int DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS = 5000;
+
     private AudioManager mAudioManager;
     private Context mContext;
     private SimpleExoPlayer mPlayer = null;
     private Uri mMediaFile;
-    private int mPosition;
+    private int mPosition = 0;
     private long resumePoint;
 
     public ExoPlayerService(Context context) {
@@ -33,24 +37,42 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
         // if the player is not exist then we will create one
         if (mPlayer == null) {
             DefaultLoadControl.Builder builder = new DefaultLoadControl.Builder().setBufferDurationsMs(
-                    DefaultLoadControl.DEFAULT_MIN_BUFFER_MS,
-                    DefaultLoadControl.DEFAULT_MAX_BUFFER_MS,
-                    loadControlStartBufferMs,
-                    DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS
+                    DEFAULT_MIN_BUFFER_MS,
+                    DEFAULT_MAX_BUFFER_MS,
+                    DEFAULT_BUFFER_FOR_PLAYBACK_MS,
+                    DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS
             );
             DefaultLoadControl defaultLoadControl = builder.createDefaultLoadControl();
             mPlayer = ExoPlayerFactory.newSimpleInstance(mContext, new DefaultTrackSelector(), defaultLoadControl);
+            mPlayer.setPlayWhenReady(true);
         }
+        if (mMediaFile != null) {
+            mPlayer.prepare(buildMediaSource(mMediaFile));
+        }
+    }
+
+    private void loadMediaSource(String url) {
+        mMediaFile = Uri.parse(url);
+        mPlayer.prepare(buildMediaSource(mMediaFile));
+    }
+
+    public void releasePlayer() {
+        mPlayer.stop();
+        mPlayer.release();
+        mPlayer = null;
     }
 
     public void playMedia(int position) {
         mPlayer.setPlayWhenReady(true);
         mPosition = position;
+        SongNotificationManager.getInstance().createNotification(mPosition, true);
     }
 
     public void stopMedia() {
         if (mPlayer == null) return;
         mPlayer.setPlayWhenReady(false);
+        mPlayer.stop();
+        SongNotificationManager.getInstance().createNotification(mPosition, false);
     }
 
     public void pauseMedia() {
@@ -59,6 +81,7 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
             mPlayer.setPlayWhenReady(false);
             resumePoint = mPlayer.getCurrentPosition();
             // if the service pause then the notificate will create play notification
+            SongNotificationManager.getInstance().createNotification(mPosition, false);
         }
     }
 
@@ -67,6 +90,7 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
             mPlayer.seekTo(resumePoint);
             mPlayer.setPlayWhenReady(true);
             // if the service resume then the notificate will create pause notification
+            SongNotificationManager.getInstance().createNotification(mPosition, true);
         }
     }
 
@@ -75,14 +99,8 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
         mPlayer.seekTo(progress);
     }
 
-    private void loadMediaSource(Uri uri) {
-        mPlayer.prepare(buildMediaSource(uri));
-        mPlayer.setPlayWhenReady(true);
-    }
-
     public void setMediaFile(String url) {
-        mMediaFile = Uri.parse(url);
-        loadMediaSource(mMediaFile);
+        loadMediaSource(url);
     }
 
     private MediaSource buildMediaSource(Uri uri) {
@@ -113,7 +131,7 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
                 // the service lost audio focus, the user probably moved to playing
                 // media on other app, so release the media player
                 if (mPlayer != null) {
-                    pauseMedia();
+                    stopMedia();
                 }
                 break;
 

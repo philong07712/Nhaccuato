@@ -1,5 +1,6 @@
 package com.example.nhaccuato.Utils;
 
 public class Constants {
-    public static final String SONG_BASE_URL = "http://vn.dubulator.com/testHT/api";
+    public static final String TRACK_CODE = "TRACKS_TRACKS";
+    public static final int NOTIFICATION_ID = 1;
 }
