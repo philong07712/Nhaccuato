@@ -4,15 +4,14 @@ import android.content.Context;
 import android.widget.ImageView;
 
 import androidx.databinding.BindingAdapter;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.bumptech.glide.Glide;
 import com.example.nhaccuato.Models.Song;
 import com.example.nhaccuato.Models.SongResponse;
-import com.example.nhaccuato.Utils.Constants;
+import com.example.nhaccuato.R;
 import com.example.nhaccuato.Utils.PathHelper;
+import com.example.nhaccuato.play.utils.SongService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,7 @@ public class PlayViewModel extends ViewModel {
     private List<Song> mSongs = new ArrayList<>();
     // Todo: Constructor
     public PlayViewModel() {
-        mSongResponeFlowable = mService.getSongRespone();
+        mSongResponeFlowable = mService.getListSongResponsePlay();
     }
 
 
@@ -57,18 +56,38 @@ public class PlayViewModel extends ViewModel {
     public Flowable<List<SongResponse>> getmSongResponeFlowable() {
         return mSongResponeFlowable;
     }
-
     @Override
     protected void onCleared() {
         super.onCleared();
         mCompositeDisposal.clear();
     }
+    @BindingAdapter("app:load_image_play")
+    public static void setImage(ImageView image, Song song) {
+        if (song.getThumbnail() != null)
+            Glide.with(mContext)
+                    .load(song.getThumbnail()).centerCrop()
+                    .placeholder(R.drawable.ic_baseline_music_note_orange)
+                    .fitCenter().into(image);
+        else {
+            Glide.with(mContext)
+                    .load(song.getThumbnailBitmap()).centerCrop()
+                    .placeholder(R.drawable.ic_baseline_music_note_orange)
+                    .fitCenter().into(image);
+        }
+    }
 
-    @BindingAdapter("app:load_image")
-    public static void setImage(ImageView image, String url) {
-        String finalurl = PathHelper.getFullUrl(url, PathHelper.TYPE_IMAGE);
-        Glide.with(mContext)
-                .load(finalurl).centerCrop()
-                .fitCenter().into(image);
+    @BindingAdapter("app:load_image_play_bg")
+    public static void setImageBackground(ImageView image, Song song) {
+        if (song.getThumbnail() != null)
+            Glide.with(mContext)
+                    .load(song.getThumbnail()).centerCrop()
+                    .placeholder(R.drawable.background_list)
+                    .fitCenter().into(image);
+        else {
+            Glide.with(mContext)
+                    .load(song.getThumbnailBitmap()).centerCrop()
+                    .placeholder(R.drawable.background_list)
+                    .fitCenter().into(image);
+        }
     }
 }

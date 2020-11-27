@@ -3,10 +3,9 @@ package com.example.nhaccuato.Models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class SongResponse {
-    @SerializedName("artist")
-    @Expose
-    public ArtistResponse artist;
+import java.util.List;
+
+public class ArtistResponse {
 
     @SerializedName("name")
     @Expose
@@ -16,8 +15,16 @@ public class SongResponse {
     @Expose
     public String description;
 
+    @SerializedName("year_of_birth")
+    @Expose
+    public int year_of_birth;
+
     @SerializedName("id")
     @Expose
     public String id;
+
+    @SerializedName("songs")
+    @Expose
+    public List<String> songsList;
 
 }
