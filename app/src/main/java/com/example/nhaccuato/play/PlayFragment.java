@@ -2,8 +2,6 @@ package com.example.nhaccuato.play;
 
 import androidx.lifecycle.ViewModelProvider;
 
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
@@ -21,23 +19,21 @@ import android.view.ViewGroup;
 
 import androidx.lifecycle.Observer;
 
-import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.nhaccuato.MainActivity;
-import com.example.nhaccuato.Models.Song;
-import com.example.nhaccuato.Models.SongResponse;
+import com.example.nhaccuato.models.Song;
+import com.example.nhaccuato.models.SongResponse;
 import com.example.nhaccuato.R;
 import com.example.nhaccuato.Utils.Constants;
 import com.example.nhaccuato.Utils.ConvertHelper;
 import com.example.nhaccuato.databinding.FragmentPlayBinding;
 import com.example.nhaccuato.play.notification.OnClearFromRecentService;
 import com.example.nhaccuato.play.notification.SongNotificationManager;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;

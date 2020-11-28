@@ -1,7 +1,6 @@
 package com.example.nhaccuato.offline;
 
 import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.content.ContentResolver;
@@ -27,7 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.nhaccuato.MainActivity;
-import com.example.nhaccuato.Models.Song;
+import com.example.nhaccuato.models.Song;
 import com.example.nhaccuato.R;
 
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ public class OfflineFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_offline, container, false);
+        View view = inflater.inflate(R.layout.offline_fragment, container, false);
         recyclerView = view.findViewById(R.id.rv_offline);
         return view;
     }

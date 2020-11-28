@@ -62,8 +62,7 @@ dependencies {
 
 // Viewapger2
     implementation "androidx.viewpager2:viewpager2:1.0.0"
-    // Bubble picker
-    implementation 'com.github.igalata:Bubble-Picker:v0.2.4'
+
     // Circle imageview
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 

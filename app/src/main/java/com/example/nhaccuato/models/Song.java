@@ -1,10 +1,8 @@
-package com.example.nhaccuato.Models;
+package com.example.nhaccuato.models;
 
 import android.graphics.Bitmap;
 
 import com.example.nhaccuato.Utils.PathHelper;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 public class Song {
     private String nameSong;

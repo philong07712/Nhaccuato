@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nhaccuato.Models.Song;
+import com.example.nhaccuato.models.Song;
 import com.example.nhaccuato.R;
 import com.example.nhaccuato.databinding.ItemPlayBinding;
 

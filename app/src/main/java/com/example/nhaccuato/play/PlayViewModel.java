@@ -7,10 +7,9 @@ import androidx.databinding.BindingAdapter;
 import androidx.lifecycle.ViewModel;
 
 import com.bumptech.glide.Glide;
-import com.example.nhaccuato.Models.Song;
-import com.example.nhaccuato.Models.SongResponse;
+import com.example.nhaccuato.models.Song;
+import com.example.nhaccuato.models.SongResponse;
 import com.example.nhaccuato.R;
-import com.example.nhaccuato.Utils.PathHelper;
 import com.example.nhaccuato.play.utils.SongService;
 
 import java.util.ArrayList;

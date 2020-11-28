@@ -18,7 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.nhaccuato.MainActivity;
-import com.example.nhaccuato.Models.Song;
+import com.example.nhaccuato.models.Song;
 import com.example.nhaccuato.R;
 import com.example.nhaccuato.Utils.Constants;
 

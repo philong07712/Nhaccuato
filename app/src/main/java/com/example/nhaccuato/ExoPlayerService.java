@@ -5,16 +5,22 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.nhaccuato.play.notification.SongNotificationManager;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 
-public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener {
+public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener,
+        Player.EventListener {
     private static final String TAG = ExoPlayerService.class.getSimpleName();
     private final int DEFAULT_MIN_BUFFER_MS = 30000;
     private final int DEFAULT_MAX_BUFFER_MS = 60000;
@@ -71,8 +77,6 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
     public void stopMedia() {
         if (mPlayer == null) return;
         mPlayer.setPlayWhenReady(false);
-        mPlayer.stop();
-        SongNotificationManager.getInstance().createNotification(mPosition, false);
     }
 
     public void pauseMedia() {
@@ -105,8 +109,10 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
 
     private MediaSource buildMediaSource(Uri uri) {
         // build MediaSource from http data source
-        DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_media");
-        MediaSource mediaSource = new ExtractorMediaSource(uri, dataSourceFactory, new DefaultExtractorsFactory(), null, null);
+        DefaultDataSourceFactory dataSource = new DefaultDataSourceFactory(mContext, Util.getUserAgent(mContext, "HippoPlayer"),
+                new DefaultBandwidthMeter());
+//        DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_media");
+        MediaSource mediaSource = new ExtractorMediaSource(uri, dataSource, new DefaultExtractorsFactory(), null, null);
         return mediaSource;
     }
 
@@ -131,7 +137,7 @@ public class ExoPlayerService implements AudioManager.OnAudioFocusChangeListener
                 // the service lost audio focus, the user probably moved to playing
                 // media on other app, so release the media player
                 if (mPlayer != null) {
-                    stopMedia();
+                    pauseMedia();
                 }
                 break;
 

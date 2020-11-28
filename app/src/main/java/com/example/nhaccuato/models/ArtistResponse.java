@@ -1,4 +1,4 @@
-package com.example.nhaccuato.Models;
+package com.example.nhaccuato.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

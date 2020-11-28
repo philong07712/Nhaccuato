@@ -9,8 +9,9 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.nhaccuato.Models.Song;
+import com.example.nhaccuato.models.Song;
 import com.example.nhaccuato.R;
+import com.example.nhaccuato.databinding.ItemOfflineBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +29,8 @@ public class OfflineSongAdapter extends RecyclerView.Adapter<OfflineSongAdapter.
     @Override
     public OfflineViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        ItemLayoutOfflineBinding itemLayoutOfflineBinding = DataBindingUtil.inflate(layoutInflater,
-                R.layout.item_layout_offline, parent, false);
+        ItemOfflineBinding itemLayoutOfflineBinding = DataBindingUtil.inflate(layoutInflater,
+                R.layout.item_offline, parent, false);
         return new OfflineViewHolder(itemLayoutOfflineBinding);
     }
 
@@ -55,8 +56,8 @@ public class OfflineSongAdapter extends RecyclerView.Adapter<OfflineSongAdapter.
     }
 
     class OfflineViewHolder extends RecyclerView.ViewHolder {
-        private final ItemLayoutOfflineBinding itemLayoutOfflineBinding;
-        public OfflineViewHolder(@NonNull ItemLayoutOfflineBinding itemLayoutOfflineBinding) {
+        private final ItemOfflineBinding itemLayoutOfflineBinding;
+        public OfflineViewHolder(@NonNull ItemOfflineBinding itemLayoutOfflineBinding) {
             super(itemLayoutOfflineBinding.getRoot());
             this.itemLayoutOfflineBinding = itemLayoutOfflineBinding;
         }

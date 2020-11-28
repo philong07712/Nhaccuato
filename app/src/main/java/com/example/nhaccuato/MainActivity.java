@@ -7,6 +7,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
 import android.view.WindowManager;
 
+import com.example.nhaccuato.offline.OfflineFragment;
 import com.example.nhaccuato.play.PassData;
 import com.example.nhaccuato.play.PlayFragment;
 import com.example.nhaccuato.play.ViewPagerAdapter;
