@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "330152469013",
+    "project_id": "nhaccuato-49d71",
+    "storage_bucket": "nhaccuato-49d71.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:330152469013:android:ced25d03709078eeece41c",
+        "android_client_info": {
+          "package_name": "com.example.nhaccuato"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "330152469013-jgoo1h9gjru51i87m7j16gahrstljohk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBun8X3cPqDXnBtlqaEshtJ14uFGP7UQfI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "330152469013-jgoo1h9gjru51i87m7j16gahrstljohk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
