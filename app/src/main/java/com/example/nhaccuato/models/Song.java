@@ -13,6 +13,7 @@ public class Song {
     private String thumbnail;
     private String imgArtist;
     private String song;
+
     private Bitmap thumbnailBitmap;
     private SongResponse songResponse;
 

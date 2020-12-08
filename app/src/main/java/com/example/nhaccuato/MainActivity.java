@@ -2,6 +2,7 @@ package com.example.nhaccuato;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.ListFragment;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
@@ -19,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPagerMain;
     OfflineFragment offlineFragment;
     public PassData mPassData;
+    private ListFragment listFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
         // create new fragment
         offlineFragment = new OfflineFragment();
+        listFragment = new ListFragment();
         // add new fragment in function setup view pager
         setupViewPager();
         tabLayoutMain.setupWithViewPager(viewPagerMain);
@@ -46,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         // add new fragment
         viewPagerAdapter.addFragment(offlineFragment, "Offline Fragment");
+        viewPagerAdapter.addFragment(listFragment, "List Fragment");
         viewPagerMain.setAdapter(viewPagerAdapter);
     }
 }
