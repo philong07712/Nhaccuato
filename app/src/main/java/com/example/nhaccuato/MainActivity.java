@@ -2,26 +2,41 @@ package com.example.nhaccuato;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.ListFragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
+import com.example.nhaccuato.R;
+import com.example.nhaccuato.Utils.Constants;
+import com.example.nhaccuato.list.ListFragment;
 import com.example.nhaccuato.offline.OfflineFragment;
 import com.example.nhaccuato.play.PassData;
-import com.example.nhaccuato.play.PlayFragment;
 import com.example.nhaccuato.play.ViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG = MainActivity.class.getSimpleName();
     private TabLayout tabLayoutMain;
     private ViewPager viewPagerMain;
+    private ListFragment listFragment;
     OfflineFragment offlineFragment;
     public PassData mPassData;
-    private ListFragment listFragment;
+//    private SearchFragment searchFragment;
+    boolean doubleBackToExitPressedOnce = false;
+    public PassData passDataOffline;
 
+    SlidingUpPanelLayout.PanelState playPanelState;
+    private int[] tabIcons = {
+            R.drawable.ic_baseline_wifi_off_24_black,
+            R.drawable.ic_baseline_view_list_24,
+//            R.drawable.ic_baseline_search_24
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,13 +47,33 @@ public class MainActivity extends AppCompatActivity {
         // find view by id in activity_main
         tabLayoutMain = findViewById(R.id.tl_main);
         viewPagerMain = findViewById(R.id.vp_main);
-
         // create new fragment
-        offlineFragment = new OfflineFragment();
         listFragment = new ListFragment();
+        offlineFragment = new OfflineFragment();
+//        searchFragment = new SearchFragment();
         // add new fragment in function setup view pager
         setupViewPager();
         tabLayoutMain.setupWithViewPager(viewPagerMain);
+        setupTabLayout();
+        viewPagerMain.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                // Hide input text when change page
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         // section for fragment tabLayout.getTabAt(i).setIcon(....);
     }
 
@@ -46,11 +81,55 @@ public class MainActivity extends AppCompatActivity {
         this.mPassData = passData;
     }
 
+    public void passOfflineList(PassData passData) {
+        this.passDataOffline = passData;
+    }
+
     private void setupViewPager(){
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         // add new fragment
-        viewPagerAdapter.addFragment(offlineFragment, "Offline Fragment");
-        viewPagerAdapter.addFragment(listFragment, "List Fragment");
+        viewPagerAdapter.addFragment(offlineFragment, null);
+        viewPagerAdapter.addFragment(listFragment, null);
+//        viewPagerAdapter.addFragment(searchFragment, null);
+        viewPagerMain.setOffscreenPageLimit(Constants.MAX_TAB_VIEWPAGER);
         viewPagerMain.setAdapter(viewPagerAdapter);
+    }
+
+    private void setupTabLayout() {
+        tabLayoutMain.getTabAt(0).setIcon(tabIcons[0]);
+        tabLayoutMain.getTabAt(1).setIcon(tabIcons[1]);
+//        tabLayoutMain.getTabAt(2).setIcon(tabIcons[2]);
+        // set default tab to list
+//        tabLayoutMain.selectTab(tabLayoutMain.getTabAt(1));
+    }
+
+    @Override
+    public void onBackPressed() {
+        // to determine if the back stack is empty or not
+        if (doubleBackToExitPressedOnce || isPlayPanelExpaned()) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
+    }
+
+    private boolean isPlayPanelExpaned() {
+        return playPanelState == SlidingUpPanelLayout.PanelState.EXPANDED;
+    }
+
+
+
+
+    public void setPanelState(SlidingUpPanelLayout.PanelState panelState) {
+        this.playPanelState = panelState;
     }
 }
