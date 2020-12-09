@@ -1,8 +1,10 @@
-
 package com.example.nhaccuato.list;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -10,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhaccuato.R;
 import com.example.nhaccuato.databinding.ItemLayoutListBinding;
-import com.example.nhaccuato.list.events.ItemEvent;
 import com.example.nhaccuato.models.Song;
+import com.example.nhaccuato.offline.PlayableItemListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,23 +22,31 @@ public class ListSongAdapter extends RecyclerView.Adapter<ListSongAdapter.ViewHo
 
     private List<Song> mSongList = new ArrayList<>();
 
-    public void setmSongList(List<Song> mSongList) {
+    private PlayableItemListener listener;
+
+    public ListSongAdapter(List<Song> mSongList, PlayableItemListener listener) {
         this.mSongList = mSongList;
-        notifyDataSetChanged();
+        this.listener = listener;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ListSongAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         ItemLayoutListBinding itemLayoutListBinding = DataBindingUtil.inflate(layoutInflater, R.layout.item_layout_list, parent, false);
         return new ViewHolder(itemLayoutListBinding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ListSongAdapter.ViewHolder holder, int position) {
         Song song = mSongList.get(position);
         holder.bind(song);
+        holder.itemLayoutListBinding.cardviewItemList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onClick(mSongList, position);
+            }
+        });
     }
 
     @Override
@@ -53,8 +63,6 @@ public class ListSongAdapter extends RecyclerView.Adapter<ListSongAdapter.ViewHo
         public void bind(Song item){
             itemLayoutListBinding.setSong(item);
             itemLayoutListBinding.executePendingBindings();
-            ItemEvent itemEvent = new ItemEvent();
-            itemLayoutListBinding.setButtonEvents(itemEvent);
         }
     }
 }
