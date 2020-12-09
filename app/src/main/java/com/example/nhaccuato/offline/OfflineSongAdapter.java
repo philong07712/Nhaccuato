@@ -9,9 +9,11 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.nhaccuato.models.Song;
+
 import com.example.nhaccuato.R;
 import com.example.nhaccuato.databinding.ItemOfflineBinding;
+import com.example.nhaccuato.models.Song;
+import com.example.nhaccuato.offline.PlayableItemListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +21,8 @@ import java.util.List;
 public class OfflineSongAdapter extends RecyclerView.Adapter<OfflineSongAdapter.OfflineViewHolder> {
 
     private List<Song> mSongList = new ArrayList<>();
-    public OfflineItemListener itemListener;
-    public OfflineSongAdapter(List<Song> mSongList, OfflineItemListener itemListener) {
+    public PlayableItemListener itemListener;
+    public OfflineSongAdapter(List<Song> mSongList, PlayableItemListener itemListener) {
         this.mSongList = mSongList;
         this.itemListener = itemListener;
     }
@@ -65,13 +67,10 @@ public class OfflineSongAdapter extends RecyclerView.Adapter<OfflineSongAdapter.
         public void bind(Song item) {
             itemLayoutOfflineBinding.setSong(item);
             itemLayoutOfflineBinding.executePendingBindings();
-            if (item.getThumbnailBitmap() != null) {
-                Glide.with(itemLayoutOfflineBinding.getRoot())
-                        .load(item.getThumbnailBitmap())
-                        .placeholder(R.drawable.ic_baseline_music_note_orange)
-                        .into(itemLayoutOfflineBinding.imgThumbnailItemOffline)
-                ;
-            }
+            Glide.with(itemLayoutOfflineBinding.getRoot())
+                    .load(item.getThumbnail())
+                    .placeholder(R.drawable.ic_baseline_music_note_orange)
+                    .into(itemLayoutOfflineBinding.imgThumbnailItemOffline);
         }
     }
 }

@@ -25,6 +25,7 @@ import android.view.animation.OvershootInterpolator;
 
 import com.example.nhaccuato.MainActivity;
 import com.example.nhaccuato.R;
+import com.example.nhaccuato.data.FirebaseHelper;
 import com.example.nhaccuato.databinding.FragmentListBinding;
 import com.example.nhaccuato.list.ListSongAdapter;
 import com.example.nhaccuato.list.ListViewModel;
@@ -58,7 +59,8 @@ public class ListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(ListViewModel.class);
         mSong.clear();
-        Log.e("List", "onActivityCreated");
+        Log.i("TAG", "onActivityCreated");
+        mViewModel.loadSong();
         mViewModel.setContext(getContext());
         mViewModel.getmSongResponeFlowable()
                 .subscribeOn(Schedulers.io())
@@ -112,7 +114,7 @@ public class ListFragment extends Fragment {
     };
 
     private void setSong() {
-        Log.d("TAG", Integer.toString(mSong.size()));
+        Log.i("TAG", Integer.toString(mSong.size()));
         ListSongAdapter listSongAdapter = new ListSongAdapter(mSong, playableItemListener);
         recyclerView = fragmentListBinding.rvList;
         recyclerView.setAdapter(listSongAdapter);

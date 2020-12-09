@@ -6,9 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Path;
+import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.media.session.MediaSessionCompat;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,12 +20,21 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.nhaccuato.MainActivity;
-import com.example.nhaccuato.models.Song;
 import com.example.nhaccuato.R;
 import com.example.nhaccuato.Utils.Constants;
+import com.example.nhaccuato.models.Song;
+import com.example.nhaccuato.play.notification.NotificationActionService;
+
+import java.util.SimpleTimeZone;
+import java.util.concurrent.ExecutionException;
+
+import static java.lang.System.load;
 
 public class CreateNotification  {
     private static final String TAG = "CreateNotification";
@@ -74,18 +87,6 @@ public class CreateNotification  {
                         Glide.with(mContext)
                                 .asBitmap()
                                 .load(url)
-                                .placeholder(R.drawable.ic_baseline_music_note_orange)
-                                .into(new SimpleTarget<Bitmap>() {
-                                    @Override
-                                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                        create(resource);
-                                    }
-                                });
-                    }
-                    else if (song.getThumbnailBitmap() != null) {
-                        Glide.with(mContext)
-                                .asBitmap()
-                                .load(song.getThumbnailBitmap())
                                 .placeholder(R.drawable.ic_baseline_music_note_orange)
                                 .into(new SimpleTarget<Bitmap>() {
                                     @Override
@@ -183,4 +184,3 @@ public class CreateNotification  {
         );
     }
 }
-

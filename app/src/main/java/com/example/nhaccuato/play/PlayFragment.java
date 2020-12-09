@@ -1,48 +1,47 @@
 package com.example.nhaccuato.play;
 
-import androidx.lifecycle.ViewModelProvider;
-
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.lifecycle.Observer;
-
-import androidx.viewpager2.widget.ViewPager2;
-
+import android.view.animation.AccelerateInterpolator;
 import android.widget.SeekBar;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager2.widget.ViewPager2;
+
 import com.bumptech.glide.Glide;
+
 import com.example.nhaccuato.MainActivity;
-import com.example.nhaccuato.models.Song;
-import com.example.nhaccuato.models.SongResponse;
 import com.example.nhaccuato.R;
 import com.example.nhaccuato.Utils.Constants;
 import com.example.nhaccuato.Utils.ConvertHelper;
+import com.example.nhaccuato.Utils.SaveHelper;
 import com.example.nhaccuato.databinding.FragmentPlayBinding;
+import com.example.nhaccuato.models.Song;
+import com.example.nhaccuato.play.ItemPlayAdapter;
+import com.example.nhaccuato.play.MediaManager;
+import com.example.nhaccuato.play.PassData;
+import com.example.nhaccuato.play.PlayViewModel;
 import com.example.nhaccuato.play.notification.OnClearFromRecentService;
 import com.example.nhaccuato.play.notification.SongNotificationManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class PlayFragment extends Fragment {
     // Todo: Constant
@@ -59,38 +58,12 @@ public class PlayFragment extends Fragment {
     private PlayViewModel mViewModel;
     private int FLAG_PAGE = -1;
     private ViewPager2PageChangeCallBack pager2PageChangeCallBack;
-    private Subscriber<List<SongResponse>> response = new Subscriber<List<SongResponse>>() {
-        @Override
-        public void onSubscribe(Subscription s) {
-            s.request(Long.MAX_VALUE);
-        }
-
-        @Override
-        public void onNext(List<SongResponse> songResponses) {
-            List<Song> songs = new ArrayList<>();
-            for (SongResponse songResponse : songResponses) {
-                Song song = new Song();
-                song.setSongResponse(songResponse);
-                songs.add(song);
-            }
-            // create manager
-            setSong(songs, 0);
-        }
-
-        @Override
-        public void onError(Throwable t) {
-            Log.e("SongResponse Fragment", t.getMessage());
-        }
-
-        @Override
-        public void onComplete() {
-            Log.e("onComplete", "Complete");
-        }
-    };
-
+    private float slideoffset;
+    private boolean isExpanding = false;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initOnPressedCallBack();
     }
 
     @Nullable
@@ -99,14 +72,28 @@ public class PlayFragment extends Fragment {
         fragmentPlayBinding = FragmentPlayBinding.inflate(inflater, container, false);
         fragmentPlayBinding.setLifecycleOwner(this);
 
+        // pass listener from main activity to this fragment
         ((MainActivity) getActivity()).passVal(new PassData() {
             @Override
             public void onChange(List<Song> songs, int position) {
-                Log.d(TAG, "onChange: NameSong " + songs.get(position).getNameSong());
-                setSong(songs, position);
+                // If sliding up panel expanding, we will stop receive called
+                if (isExpanding) {
+                    return;
+                }
+                setSong(songs, position, true);
+                isExpanding = true;
+                panelLayout.setTouchEnabled(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        isExpanding = false;
+                        Log.d(TAG, "run: ");
+                        panelLayout.setTouchEnabled(true);
+                    }
+                }, 300);
             }
         });
-
+        // load previous song list and that position
         return fragmentPlayBinding.getRoot();
     }
 
@@ -116,12 +103,9 @@ public class PlayFragment extends Fragment {
         mMediaManager = new MediaManager(getContext());
         mViewModel = new ViewModelProvider(this).get(PlayViewModel.class);
         mViewModel.setContext(getContext());
-        mViewModel.getmSongResponeFlowable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response);
         initListener();
         initHandler();
+        loadSavedData();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             getActivity().registerReceiver(mMediaManager.broadcastReceiver, new IntentFilter(Constants.TRACK_CODE));
             Intent clearService = new Intent(getActivity().getBaseContext(), OnClearFromRecentService.class);
@@ -129,22 +113,57 @@ public class PlayFragment extends Fragment {
         }
     }
 
+    private void initOnPressedCallBack() {
+        requireActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (isFullScreen()) {
+                    panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                }
+                else {
+                    setEnabled(false);
+                    getActivity().onBackPressed();
+                }
+            }
+        });
+    }
+
+    private boolean isFullScreen() {
+        return panelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED;
+    }
+
+    private void loadSavedData() {
+        List<Song> prevSongs = SaveHelper.loadSong(getActivity());
+        int prevPos = SaveHelper.loadCurrentSongPosition(getActivity());
+        if (prevSongs.isEmpty()) {
+            setSong(new ArrayList<>(), -1, false);
+            return;
+        }
+        setSong(prevSongs, prevPos, false);
+    }
+
     private void initListener() {
         panelLayout = getActivity().findViewById(R.id.sliding_up_panel_main);
+
         panelLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-                Log.d(TAG, "onPanelSlide: " + slideOffset);
                 fragmentPlayBinding.miniContainerController.setAlpha(1f - slideOffset);
                 // set alpha of the fullscreen
-                fragmentPlayBinding.vpPlay.setAlpha(slideOffset);
-                fragmentPlayBinding.containerController.setAlpha(slideOffset);
+//                fragmentPlayBinding.vpPlay.setAlpha(slideOffset);
+//                fragmentPlayBinding.containerController.setAlpha(slideOffset);
+                slideoffset = slideOffset;
             }
 
             @Override
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                Log.d(TAG, "onPanelStateChanged: Previous " + previousState.name());
-                Log.d(TAG, "onPanelStateChanged: New " + newState.name());
+                if (slideoffset < 0.2 && previousState == SlidingUpPanelLayout.PanelState.DRAGGING) {
+                    panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                }
+                else if (slideoffset == 1 && previousState == SlidingUpPanelLayout.PanelState.DRAGGING) {
+                    panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                }
+                ((MainActivity) getActivity()).setPanelState(newState);
             }
         });
 
@@ -229,22 +248,45 @@ public class PlayFragment extends Fragment {
                 // if the repeat has been choosen
             }
         });
+
+
         fragmentPlayBinding.sbDurationSong.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
+                updateTime(progressValue * 100, mMediaManager.getDuration());
                 if (fromUser) {
-                    mMediaManager.seekTo(progress * 100);
+                    mMediaManager.seekTo(progressValue * 100);
                 }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                seekBar.animate()
+                        .setDuration(500)
+                        .setInterpolator(new AccelerateInterpolator())
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                super.onAnimationStart(animation);
+                                seekBar.setThumb(getResources().getDrawable(R.drawable.seek_thumb_zoom));
+                            }
+                        }).start();
+                seekBar.setTag(R.drawable.seek_thumb_zoom);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                seekBar.animate()
+                        .setDuration(500)
+                        .setInterpolator(new AccelerateInterpolator())
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                super.onAnimationStart(animation);
+                                seekBar.setThumb(getResources().getDrawable(R.drawable.seek_thumb));
+                            }
+                        }).start();
+                seekBar.setTag(R.drawable.seek_thumb);
             }
         });
 
@@ -258,6 +300,8 @@ public class PlayFragment extends Fragment {
         // create pager 2 listener
         pager2PageChangeCallBack = new ViewPager2PageChangeCallBack();
         fragmentPlayBinding.vpPlay.registerOnPageChangeCallback(pager2PageChangeCallBack);
+        fragmentPlayBinding.vpPlay.setOffscreenPageLimit(20);
+
 
     }
 
@@ -300,16 +344,22 @@ public class PlayFragment extends Fragment {
 
     // Todo: inner classes + interfaces
 
-    private void setSong(List<Song> songs, int position) {
+    private void setSong(List<Song> songs, int position, boolean isExpanded) {
+        FLAG_PAGE = -1;
+        if (isExpanded) {
+            // case we click in another song
+            panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+            // fix the bug that we choose song too fast
+        }
+
         mSong = songs;
-        ItemPlayAdapter itemPlayAdapter = new ItemPlayAdapter();
-        itemPlayAdapter.setmSongList(songs);
+        ItemPlayAdapter itemPlayAdapter = new ItemPlayAdapter(mSong);
         fragmentPlayBinding.vpPlay.setAdapter(itemPlayAdapter);
         fragmentPlayBinding.vpPlay.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         mMediaManager.setSongs(songs);
         // this will init the singleton class notification manager
         SongNotificationManager.getInstance().init(getContext(), songs);
-        pager2PageChangeCallBack.onPageSelected(position);
+        if (position != -1) pager2PageChangeCallBack.onPageSelected(position);
     }
 
     @Override
@@ -325,6 +375,10 @@ public class PlayFragment extends Fragment {
         super.onDestroy();
         // Remove the loop to update times and seekbar
         mHandler.removeCallbacksAndMessages(null);
+        // save the list and the position of current song for next time use
+        SaveHelper.saveSong(getActivity(), mSong);
+        SaveHelper.saveCurrentSongPosition(getActivity(), fragmentPlayBinding.vpPlay.getCurrentItem());
+
         fragmentPlayBinding.vpPlay.unregisterOnPageChangeCallback(pager2PageChangeCallBack);
         mMediaManager.deleteNotification();
         getActivity().unregisterReceiver(mMediaManager.broadcastReceiver);
@@ -346,37 +400,30 @@ public class PlayFragment extends Fragment {
             }
             playCurrentSong(position);
             FLAG_PAGE = position;
-
             fragmentPlayBinding.vpPlay.setCurrentItem(FLAG_PAGE, false);
             // we will set the tittle and artist name to current song
             fragmentPlayBinding.tvTitleController.setText(mSong.get(position).getNameSong());
             fragmentPlayBinding.tvArtistController.setText(mSong.get(position).getNameArtist());
-            Log.d(TAG, "onPageSelected: " + position);
             updateController(mSong.get(position));
+            updateBackground(mSong.get(position));
             updateTime(0, 0);
             updateSeekBar(0, 0);
+        }
+
+        private void updateBackground(Song song) {
+            fragmentPlayBinding.setSong(song);
         }
 
         private void updateController(Song song) {
             fragmentPlayBinding.tvTitleController.setText(song.getNameSong());
             fragmentPlayBinding.tvArtistController.setText(song.getNameArtist());
-            if (song.getThumbnail() != null) {
-                String url = song.getThumbnail();
-                Glide.with(getContext())
-                        .load(url)
-                        .centerCrop()
-                        .placeholder(R.drawable.ic_baseline_music_note_orange)
-                        .into(fragmentPlayBinding.imgThumbnailController);
-            }
-            else {
-                Glide.with(getContext())
-                        .load(song.getThumbnailBitmap())
-                        .centerCrop()
-                        .placeholder(R.drawable.ic_baseline_music_note_orange)
-                        .into(fragmentPlayBinding.imgThumbnailController);
-            }
-
+            String url = song.getThumbnail();
+            Glide.with(getContext())
+                    .load(url)
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_baseline_music_note_orange)
+                    .into(fragmentPlayBinding.imgThumbnailController);
         }
+
     }
 }
-
