@@ -76,4 +76,39 @@ public class Song {
         return song;
     }
 
+    public void setNameSong(String nameSong) {
+        this.nameSong = nameSong;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setIdSong(String idSong) {
+        this.idSong = idSong;
+    }
+
+    public void setIdArtist(String idArtist) {
+        this.idArtist = idArtist;
+    }
+
+    public void setNameArtist(String nameArtist) {
+        this.nameArtist = nameArtist;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public void setImgArtist(String imgArtist) {
+        this.imgArtist = imgArtist;
+    }
+
+    public void setSong(String song) {
+        this.song = song;
+    }
+
+    public SongResponse getSongResponse() {
+        return songResponse;
+    }
 }

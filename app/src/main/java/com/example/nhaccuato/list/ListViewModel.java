@@ -19,6 +19,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.nhaccuato.data.FirebaseHelper;
+import com.example.nhaccuato.data.OnSongComplete;
 import com.example.nhaccuato.models.Song;
 import com.example.nhaccuato.models.SongResponse;
 import com.example.nhaccuato.play.utils.SongService;
@@ -30,9 +31,6 @@ import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class ListViewModel extends ViewModel {
-
-
-
     public Song song = new Song();
     public static Context mContext;
     private SongService mService = new SongService();
@@ -52,7 +50,12 @@ public class ListViewModel extends ViewModel {
     }
 
     public void loadSong() {
-        FirebaseHelper.getAllSong();
+        FirebaseHelper.getAllSong(new OnSongComplete() {
+            @Override
+            public void onComplete(List<Song> list) {
+                songLiveData.postValue(list);
+            }
+        });
     }
 
     public Flowable<List<SongResponse>> getmSongResponeFlowable() {

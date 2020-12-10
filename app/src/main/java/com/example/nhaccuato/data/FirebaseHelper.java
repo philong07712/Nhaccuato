@@ -2,25 +2,40 @@ package com.example.nhaccuato.data;
 
 import android.util.Log;
 
+import com.example.nhaccuato.models.Song;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 public class FirebaseHelper {
-    public static void getAllSong() {
-        Log.i("TAG", "getAllSong: ");
+    public static List<Song>  getAllSong(OnSongComplete listener) {
+        List<Song> list = new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference docRef = db.collection("Song");
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    Log.i("TAG", "getAllSong: id " + document.getId() + "=>" + document.getData());
+                    Song song = new Song();
+                    list.add(song);
+                    song.setDescription((String) document.get("description"));
+                    song.setIdSong((String) document.get("id"));
+                    song.setIdArtist((String) document.get("idArtist"));
+                    song.setNameSong((String) document.get("name"));
+                    song.setNameArtist((String) document.get("nameArtist"));
+                    song.setSong((String) document.get("song"));
+                    song.setThumbnail((String) document.get("thumbnail"));
                 }
             } else {
                 task.getException().printStackTrace();
             }
+            listener.onComplete(list);
         });
+        return list;
     }
 }

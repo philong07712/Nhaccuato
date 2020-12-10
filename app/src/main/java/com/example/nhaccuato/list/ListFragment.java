@@ -44,6 +44,14 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ListFragment extends Fragment {
+    private final String TAG = ListFragment.class.getSimpleName();
+    private ListViewModel mViewModel;
+    private FragmentListBinding fragmentListBinding;
+    private List<Song> mSong = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private SnapHelper snapHelper = new LinearSnapHelper();
+    private LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+    private ItemEvent buttonEvent;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -62,19 +70,15 @@ public class ListFragment extends Fragment {
         Log.i("TAG", "onActivityCreated");
         mViewModel.loadSong();
         mViewModel.setContext(getContext());
-        mViewModel.getmSongResponeFlowable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response);
+        mViewModel.getSongLiveData().observe(getViewLifecycleOwner(), songs -> {
+            if (songs != null) {
+                mSong.clear();
+                mSong.addAll(songs);
+                setSong();
+            }
+        });
     }
 
-    private ListViewModel mViewModel;
-    private FragmentListBinding fragmentListBinding;
-    private List<Song> mSong = new ArrayList<>();
-    private RecyclerView recyclerView;
-    private SnapHelper snapHelper = new LinearSnapHelper();
-    private LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-    private ItemEvent buttonEvent;
     private PlayableItemListener playableItemListener = new PlayableItemListener() {
         @Override
         public void onClick(List<Song> songs, int position) {
@@ -86,49 +90,22 @@ public class ListFragment extends Fragment {
         return new ListFragment();
     }
 
-    private Subscriber<List<SongResponse>> response = new Subscriber<List<SongResponse>>() {
-        @Override
-        public void onSubscribe(Subscription s) {
-            s.request(Long.MAX_VALUE);
-        }
-
-        @Override
-        public void onNext(List<SongResponse> songResponses) {
-            for (SongResponse songResponse : songResponses) {
-                Song song = new Song();
-                song.setSongResponse(songResponse);
-                mSong.add(song);
-            }
-            setSong();
-        }
-
-        @Override
-        public void onError(Throwable t) {
-            Log.e("SongResponse List", t.getMessage());
-        }
-
-        @Override
-        public void onComplete() {
-            Log.e("onComplete List", "Complete List");
-        }
-    };
-
     private void setSong() {
-        Log.i("TAG", Integer.toString(mSong.size()));
+        Log.i(TAG, "setSong: " + mSong.size());
         ListSongAdapter listSongAdapter = new ListSongAdapter(mSong, playableItemListener);
         recyclerView = fragmentListBinding.rvList;
         recyclerView.setAdapter(listSongAdapter);
         recyclerView.setLayoutManager(layoutManager);
         snapHelper.attachToRecyclerView(recyclerView);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(0);
-                CardView cardView = viewHolder.itemView.findViewById(R.id.cardview_item_list);
-                cardView.animate().setDuration(200).scaleX(1f).scaleY(1f).setInterpolator(new OvershootInterpolator()).start();
-            }
-        }, 100);
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(0);
+//                CardView cardView = viewHolder.itemView.findViewById(R.id.cardview_item_list);
+//                cardView.animate().setDuration(200).scaleX(1f).scaleY(1f).setInterpolator(new OvershootInterpolator()).start();
+//            }
+//        }, 100);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
