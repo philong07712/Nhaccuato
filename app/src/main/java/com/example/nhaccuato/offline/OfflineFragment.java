@@ -187,7 +187,9 @@ public class OfflineFragment extends Fragment {
     private void updateLoadingView() {
         progressBarLoad.setVisibility(View.INVISIBLE);
         // pass data to main
-        ((MainActivity) getActivity()).passDataOffline.onChange(songList, 0);
+        if (((MainActivity) getActivity()).passDataOffline != null) {
+            ((MainActivity) getActivity()).passDataOffline.onChange(songList, 0);
+        }
         setupRecylerView();
     }
 

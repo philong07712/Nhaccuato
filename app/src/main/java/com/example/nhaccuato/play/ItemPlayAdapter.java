@@ -7,9 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nhaccuato.models.Song;
+
 import com.example.nhaccuato.R;
 import com.example.nhaccuato.databinding.ItemPlayBinding;
+import com.example.nhaccuato.models.Song;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +19,10 @@ public class ItemPlayAdapter extends RecyclerView.Adapter<ItemPlayAdapter.ViewHo
 
     private List<Song> mSongList = new ArrayList<>();
 
-    public void setmSongList(List<Song> mSongList) {
+    public ItemPlayAdapter(List<Song> mSongList) {
         this.mSongList = mSongList;
     }
+
 
     @NonNull
     @Override
@@ -53,6 +55,8 @@ public class ItemPlayAdapter extends RecyclerView.Adapter<ItemPlayAdapter.ViewHo
 
         public void bind(Song item) {
             itemLayoutPlayBinding.setSong(item);
+            itemLayoutPlayBinding.textTitleSong.setSelected(true);
+            itemLayoutPlayBinding.textArtistSong.setSelected(true);
             itemLayoutPlayBinding.executePendingBindings();
         }
     }
