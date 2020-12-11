@@ -72,9 +72,11 @@ public class ListFragment extends Fragment {
         mViewModel.setContext(getContext());
         mViewModel.getSongLiveData().observe(getViewLifecycleOwner(), songs -> {
             if (songs != null) {
-                mSong.clear();
-                mSong.addAll(songs);
-                setSong();
+                if (!songs.isEmpty()) {
+                    mSong.clear();
+                    mSong.addAll(songs);
+                    setSong();
+                }
             }
         });
     }

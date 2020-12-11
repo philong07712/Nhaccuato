@@ -8,7 +8,6 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.nhaccuato.ExoPlayerService;
 import com.example.nhaccuato.models.Song;
 import com.example.nhaccuato.Utils.Constants;
 import com.example.nhaccuato.play.notification.CreateNotification;

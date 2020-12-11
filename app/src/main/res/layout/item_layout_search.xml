@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="artist"
+            type="com.example.hippoplayer.models.Artist" />
+
+        <variable
+            name="song"
+            type="com.example.hippoplayer.models.Song" />
+
+    </data>
+
+    <ImageView
+        android:id="@+id/image_item_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:adjustViewBounds="true"
+        android:maxHeight="250dp"
+        android:minHeight="300dp"
+        android:scaleType="centerCrop"
+        app:load_image_item_artist_search="@{artist}"
+        app:load_image_item_song_search="@{song}" />
+
+</layout>
