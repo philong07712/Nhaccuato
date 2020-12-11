@@ -6,11 +6,11 @@
 
         <variable
             name="artist"
-            type="com.example.hippoplayer.models.Artist" />
+            type="com.example.nhaccuato.models.Artist" />
 
         <variable
             name="song"
-            type="com.example.hippoplayer.models.Song" />
+            type="com.example.nhaccuato.models.Song" />
 
     </data>
 

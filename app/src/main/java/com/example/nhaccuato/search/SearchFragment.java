@@ -1,3 +1,5 @@
+package com.example.nhaccuato.search;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
