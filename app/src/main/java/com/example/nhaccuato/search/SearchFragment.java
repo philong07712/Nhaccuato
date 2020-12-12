@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.nhaccuato.MainActivity;
+import com.example.nhaccuato.databinding.FragmentSearchBinding;
 import com.example.nhaccuato.models.Artist;
 import com.example.nhaccuato.models.ArtistResponse;
 import com.example.nhaccuato.models.Song;
