@@ -11,7 +11,7 @@
 
         <variable
             name="itemEvent"
-            type="com.example.nhaccuato.list.events.ItemEvent" />
+            type="com.example.nhaccuato.detail.events.ItemEvent" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -16,6 +16,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.nhaccuato.MainActivity;
 import com.example.nhaccuato.R;
 import com.example.nhaccuato.Utils.PathHelper;
+import com.example.nhaccuato.detail.DetailFragment;
+import com.example.nhaccuato.detail.DetailSerializable;
 import com.example.nhaccuato.models.Artist;
 import com.example.nhaccuato.models.ArtistResponse;
 import com.example.nhaccuato.models.Song;
