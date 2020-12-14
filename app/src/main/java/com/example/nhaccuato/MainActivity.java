@@ -17,6 +17,7 @@ import com.example.nhaccuato.list.ListFragment;
 import com.example.nhaccuato.offline.OfflineFragment;
 import com.example.nhaccuato.play.PassData;
 import com.example.nhaccuato.play.ViewPagerAdapter;
+import com.example.nhaccuato.search.SearchFragment;
 import com.google.android.material.tabs.TabLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private ListFragment listFragment;
     OfflineFragment offlineFragment;
     public PassData mPassData;
-//    private SearchFragment searchFragment;
+    private SearchFragment searchFragment;
     boolean doubleBackToExitPressedOnce = false;
     public PassData passDataOffline;
 
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private int[] tabIcons = {
             R.drawable.ic_baseline_wifi_off_24_black,
             R.drawable.ic_baseline_view_list_24,
-//            R.drawable.ic_baseline_search_24
+            R.drawable.ic_baseline_search_24
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         // create new fragment
         listFragment = new ListFragment();
         offlineFragment = new OfflineFragment();
-//        searchFragment = new SearchFragment();
+        searchFragment = new SearchFragment();
         // add new fragment in function setup view pager
         setupViewPager();
         tabLayoutMain.setupWithViewPager(viewPagerMain);
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         // add new fragment
         viewPagerAdapter.addFragment(offlineFragment, null);
         viewPagerAdapter.addFragment(listFragment, null);
-//        viewPagerAdapter.addFragment(searchFragment, null);
+        viewPagerAdapter.addFragment(searchFragment, null);
         viewPagerMain.setOffscreenPageLimit(Constants.MAX_TAB_VIEWPAGER);
         viewPagerMain.setAdapter(viewPagerAdapter);
     }
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupTabLayout() {
         tabLayoutMain.getTabAt(0).setIcon(tabIcons[0]);
         tabLayoutMain.getTabAt(1).setIcon(tabIcons[1]);
-//        tabLayoutMain.getTabAt(2).setIcon(tabIcons[2]);
+        tabLayoutMain.getTabAt(2).setIcon(tabIcons[2]);
         // set default tab to list
 //        tabLayoutMain.selectTab(tabLayoutMain.getTabAt(1));
     }
