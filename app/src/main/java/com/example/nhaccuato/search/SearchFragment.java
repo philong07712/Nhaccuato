@@ -22,6 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.nhaccuato.MainActivity;
+import com.example.nhaccuato.data.FirebaseHelper;
+import com.example.nhaccuato.data.OnArtistComplete;
+import com.example.nhaccuato.data.OnSongComplete;
 import com.example.nhaccuato.databinding.FragmentSearchBinding;
 import com.example.nhaccuato.models.Artist;
 import com.example.nhaccuato.models.ArtistResponse;
@@ -62,58 +65,6 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
     public static SearchFragment newInstance() {
         return new SearchFragment();
     }
-
-    private Subscriber<List<ArtistResponse>> responseArtist = new Subscriber<List<ArtistResponse>>() {
-        @Override
-        public void onSubscribe(Subscription s) {
-            s.request(Long.MAX_VALUE);
-        }
-
-        @Override
-        public void onNext(List<ArtistResponse> artistResponses) {
-            for (ArtistResponse artistResponse : artistResponses) {
-                Artist artist = new Artist();
-                artist.setSongResponse(artistResponse);
-                artists.add(artist);
-            }
-            setArrayList(artists);
-        }
-
-        @Override
-        public void onError(Throwable t) {
-            Log.e("SongResponse List", t.getMessage());
-        }
-
-        @Override
-        public void onComplete() {
-        }
-    };
-
-    private Subscriber<List<SongResponse>> responseSong = new Subscriber<List<SongResponse>>() {
-        @Override
-        public void onSubscribe(Subscription s) {
-            s.request(Long.MAX_VALUE);
-        }
-
-        @Override
-        public void onNext(List<SongResponse> songResponses) {
-            for (SongResponse songResponse : songResponses) {
-                Song song = new Song();
-                song.setSongResponse(songResponse);
-                songs.add(song);
-            }
-            songs.addAll(songOfflineList);
-        }
-
-        @Override
-        public void onError(Throwable t) {
-            Log.e("SongResponse List", t.getMessage());
-        }
-
-        @Override
-        public void onComplete() {
-        }
-    };
 
     private void setArrayList(ArrayList arrayList) {
         searchAdapter.setData(arrayList, 0);
@@ -220,17 +171,21 @@ public class SearchFragment extends Fragment implements SearchTitleAdapter.Searc
         artists.clear();
         songs.clear();
         mViewModel.setContext(getContext());
-        // Request data
-        mViewModel.getmSongListArtist()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(responseArtist);
 
-        mViewModel.getmSongResponeFlowable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(responseSong);
+        FirebaseHelper.getAllSong(new OnSongComplete() {
+            @Override
+            public void onComplete(List<Song> list) {
+                songs.addAll(list);
+            }
+        });
 
+        FirebaseHelper.getAllArtists(new OnArtistComplete() {
+            @Override
+            public void onComplete(List<Artist> list) {
+                artists.addAll(list);
+                setArrayList(artists);
+            }
+        });
         mViewModel.setActivity(getActivity());
     }
 

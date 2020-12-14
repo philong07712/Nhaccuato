@@ -22,7 +22,6 @@ import com.example.nhaccuato.data.FirebaseHelper;
 import com.example.nhaccuato.data.OnSongComplete;
 import com.example.nhaccuato.models.Song;
 import com.example.nhaccuato.models.SongResponse;
-import com.example.nhaccuato.play.utils.SongService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,14 +32,10 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 public class ListViewModel extends ViewModel {
     public Song song = new Song();
     public static Context mContext;
-    private SongService mService = new SongService();
 
-    private CompositeDisposable mCompositeDisposal = new CompositeDisposable();
-    private Flowable<List<SongResponse>> mSongResponeFlowable;
     private MutableLiveData<List<Song>> songLiveData;
 
     public ListViewModel() {
-        mSongResponeFlowable = mService.getListSongResponseList();
         songLiveData = new MutableLiveData<>();
         songLiveData.setValue(new ArrayList<>());
     }
@@ -58,9 +53,6 @@ public class ListViewModel extends ViewModel {
         });
     }
 
-    public Flowable<List<SongResponse>> getmSongResponeFlowable() {
-        return mSongResponeFlowable;
-    }
 
     public void setContext(Context context) {
         this.mContext = context;
@@ -70,7 +62,6 @@ public class ListViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        mCompositeDisposal.clear();
     }
 
     @BindingAdapter("app:load_image_list_artist")

@@ -22,8 +22,6 @@ import com.example.nhaccuato.models.Artist;
 import com.example.nhaccuato.models.ArtistResponse;
 import com.example.nhaccuato.models.Song;
 import com.example.nhaccuato.models.SongResponse;
-import com.example.nhaccuato.play.utils.SongService;
-import com.example.nhaccuato.search.SearchFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,33 +30,18 @@ import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class SearchViewModel extends ViewModel {
-    private Flowable<List<ArtistResponse>> mSongListArtist;
-    private Flowable<List<SongResponse>> mSongResponeFlowable;
 
-    private SongService mService = new SongService();
-    private CompositeDisposable mCompositeDisposal = new CompositeDisposable();
     public static Context mContext;
     public static Activity mActivity;
 
     private String idSong = null;
 
     public SearchViewModel() {
-        mSongListArtist = mService.getListArtistResponse();
-        mSongResponeFlowable = mService.getListSongResponseList();
-    }
-
-    public Flowable<List<ArtistResponse>> getmSongListArtist() {
-        return mSongListArtist;
-    }
-
-    public Flowable<List<SongResponse>> getmSongResponeFlowable() {
-        return mSongResponeFlowable;
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
-        mCompositeDisposal.clear();
     }
 
     public void setContext(Context context) {

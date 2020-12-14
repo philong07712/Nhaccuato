@@ -11,12 +11,11 @@ import androidx.lifecycle.ViewModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.example.nhaccuato.R;
 import com.example.nhaccuato.models.Song;
 import com.example.nhaccuato.models.SongResponse;
-import com.example.nhaccuato.play.utils.SongService;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,6 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 public class PlayViewModel extends ViewModel {
     private static final int BLUR_RADIUS = 60;
     private static final int BLUR_SAMPLING = 3;
-    private SongService songService = new SongService();
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public Song song = new Song();
@@ -35,16 +33,13 @@ public class PlayViewModel extends ViewModel {
 
     // Todo: Fields
     // Song service to get data
-    private SongService mService = new SongService();
     // media service to play the song
 
-    private CompositeDisposable mCompositeDisposal = new CompositeDisposable();
-    private Flowable<List<SongResponse>> mSongResponeFlowable;
     // variables
     private List<Song> mSongs = new ArrayList<>();
     // Todo: Constructor
     public PlayViewModel() {
-        mSongResponeFlowable = mService.getListSongResponsePlay();
+
     }
 
 
@@ -56,13 +51,9 @@ public class PlayViewModel extends ViewModel {
         this.mContext = context;
     }
 
-    public Flowable<List<SongResponse>> getmSongResponeFlowable() {
-        return mSongResponeFlowable;
-    }
     @Override
     protected void onCleared() {
         super.onCleared();
-        mCompositeDisposal.clear();
     }
     @BindingAdapter("app:load_image_play")
     public static void setImage(ImageView image, Song song) {

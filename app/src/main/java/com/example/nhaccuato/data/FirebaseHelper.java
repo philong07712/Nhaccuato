@@ -2,6 +2,7 @@ package com.example.nhaccuato.data;
 
 import android.util.Log;
 
+import com.example.nhaccuato.models.Artist;
 import com.example.nhaccuato.models.Song;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -30,6 +31,29 @@ public class FirebaseHelper {
                     song.setNameArtist((String) document.get("nameArtist"));
                     song.setSong((String) document.get("song"));
                     song.setThumbnail((String) document.get("thumbnail"));
+                }
+            } else {
+                task.getException().printStackTrace();
+            }
+            listener.onComplete(list);
+        });
+        return list;
+    }
+
+    public static List<Artist> getAllArtists(OnArtistComplete listener) {
+        List<Artist> list = new ArrayList<>();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference docRef = db.collection("Artist");
+        docRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    Artist artist = new Artist();
+                    list.add(artist);
+                    artist.setName((String) document.get("name"));
+                    artist.setYear_of_birth((int) document.get("birth"));
+                    artist.setId((String) document.get("id"));
+                    artist.setDescription((String) document.get("description"));
+                    artist.setThumbnail((String) document.get("thumbnail"));
                 }
             } else {
                 task.getException().printStackTrace();
