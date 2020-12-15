@@ -1,5 +1,5 @@
 # Introduction
-![alt text](https://github.com/philong07712/Nhaccuato/blob/master/app/src/main/res/drawable-hdpi/ic_baseline_music_note_orange.png?raw=true)
+![alt text](https://github.com/philong07712/Nhaccuato/blob/main/app/src/main/res/drawable-xxxhdpi/ic_baseline_music_note_orange.png)
 - Lightweight and Material designed Music Player.
 ##  :beginner: About
 - **Feature**:
