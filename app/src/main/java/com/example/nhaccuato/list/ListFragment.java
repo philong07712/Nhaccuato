@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,23 +24,13 @@ import android.view.animation.OvershootInterpolator;
 
 import com.example.nhaccuato.MainActivity;
 import com.example.nhaccuato.R;
-import com.example.nhaccuato.data.FirebaseHelper;
 import com.example.nhaccuato.databinding.FragmentListBinding;
-import com.example.nhaccuato.list.ListSongAdapter;
-import com.example.nhaccuato.list.ListViewModel;
 import com.example.nhaccuato.list.events.ItemEvent;
 import com.example.nhaccuato.models.Song;
-import com.example.nhaccuato.models.SongResponse;
 import com.example.nhaccuato.offline.PlayableItemListener;
-
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ListFragment extends Fragment {
     private final String TAG = ListFragment.class.getSimpleName();

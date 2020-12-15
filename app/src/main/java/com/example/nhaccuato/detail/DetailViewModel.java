@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.nhaccuato.Utils.PathHelper;
 
 public class DetailViewModel extends ViewModel {
 
@@ -24,10 +23,9 @@ public class DetailViewModel extends ViewModel {
     }
 
     @BindingAdapter("app:load_image_detail_song")
-    public static void setImageSong(ImageView image, String idSong) {
-        String finalurl = PathHelper.getFullUrl(idSong, PathHelper.TYPE_IMAGE);
+    public static void setImageSong(ImageView image, String songthumbnail) {
         Glide.with(mContext)
-                .load(finalurl)
+                .load(songthumbnail)
                 .centerCrop()
                 .fitCenter()
                 .apply(RequestOptions.bitmapTransform(new RoundedCorners(30)))

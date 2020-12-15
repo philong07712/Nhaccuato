@@ -18,7 +18,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.nhaccuato.MainActivity;
 import com.example.nhaccuato.R;
-import com.example.nhaccuato.Utils.PathHelper;
 import com.example.nhaccuato.databinding.FragmentDetailBinding;
 import com.example.nhaccuato.models.Artist;
 import com.example.nhaccuato.models.Song;
@@ -60,10 +59,9 @@ public class DetailFragment extends Fragment {
         fragmentDetailBinding.recyclerViewDetail.setAdapter(detailAdapter);
     }
 
-    private void setImageHeader(String idArtist) {
-        String finalurl = PathHelper.getFullUrl(idArtist, PathHelper.TYPE_ARTIST);
+    private void setImageHeader(String artistThumbnail) {
         Glide.with(getContext())
-                .load(finalurl)
+                .load(artistThumbnail)
                 .centerCrop()
                 .fitCenter()
                 .placeholder(R.drawable.ic_baseline_music_note_orange)
@@ -80,7 +78,7 @@ public class DetailFragment extends Fragment {
         idArtist = songSerializable.getIdArtist();
         mArtists = songSerializable.getArtistList();
         mSong = songSerializable.getSongList();
-        setImageHeader(idArtist);
+        setImageHeader(songSerializable.getArtistThumbnail());
         setListSongs(mSong, mArtists, idArtist);
         fragmentDetailBinding.buttonRandomSongArtistDetail.setOnClickListener(new View.OnClickListener() {
             @Override

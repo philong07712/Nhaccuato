@@ -8,13 +8,15 @@ import java.util.List;
 
 public class DetailSerializable implements Serializable {
     private transient String idArtist;
+    private transient String artistThumbnail;
     private transient List<Song> songList;
     private transient List<Artist> artistList;
 
-    public DetailSerializable(String idArtist, List<Song> songList, List<Artist> artistList) {
+    public DetailSerializable(String idArtist, String artistThumbnail, List<Song> songList, List<Artist> artistList) {
         this.idArtist = idArtist;
         this.songList = songList;
         this.artistList = artistList;
+        this.artistThumbnail = artistThumbnail;
     }
 
     public String getIdArtist() {
@@ -27,5 +29,9 @@ public class DetailSerializable implements Serializable {
 
     public List<Artist> getArtistList() {
         return artistList;
+    }
+
+    public String getArtistThumbnail() {
+        return artistThumbnail;
     }
 }

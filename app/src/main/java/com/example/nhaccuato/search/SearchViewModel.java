@@ -15,19 +15,13 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.nhaccuato.MainActivity;
 import com.example.nhaccuato.R;
-import com.example.nhaccuato.Utils.PathHelper;
 import com.example.nhaccuato.detail.DetailFragment;
 import com.example.nhaccuato.detail.DetailSerializable;
 import com.example.nhaccuato.models.Artist;
-import com.example.nhaccuato.models.ArtistResponse;
 import com.example.nhaccuato.models.Song;
-import com.example.nhaccuato.models.SongResponse;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class SearchViewModel extends ViewModel {
 
@@ -55,18 +49,16 @@ public class SearchViewModel extends ViewModel {
     @BindingAdapter({"app:load_image_item_artist_search", "app:load_image_item_song_search"})
     public static void setImageItemSearch(ImageView image, Artist artist, Song song) {
         if (artist != null) {
-            String finalurl = PathHelper.getFullUrl(artist.getId(), PathHelper.TYPE_ARTIST);
             Glide.with(mContext)
-                    .load(finalurl)
+                    .load(artist.getThumbnail())
                     .centerCrop()
                     .fitCenter()
                     .placeholder(R.drawable.ic_baseline_music_note_orange)
                     .apply(RequestOptions.bitmapTransform(new RoundedCorners(30)))
                     .into(image);
         } else if (song != null) {
-            String finalurl = PathHelper.getFullUrl(song.getIdSong(), PathHelper.TYPE_IMAGE);
             Glide.with(mContext)
-                    .load(finalurl)
+                    .load(song.getThumbnail())
                     .error(Glide.with(mContext).load(song.getThumbnail()).placeholder(R.drawable.ic_baseline_music_note_orange))
                     .centerCrop()
                     .fitCenter()
@@ -80,7 +72,7 @@ public class SearchViewModel extends ViewModel {
             @Override
             public void onClick(View v) {
                 if (artist != null) {
-                    DetailSerializable songSerializable = new DetailSerializable(artist.getId(), SearchFragment.songs, SearchFragment.artists);
+                    DetailSerializable songSerializable = new DetailSerializable(artist.getId(), artist.getThumbnail(), SearchFragment.songs, SearchFragment.artists);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("serializable", songSerializable);
                     DetailFragment detailArtistFragment = new DetailFragment();

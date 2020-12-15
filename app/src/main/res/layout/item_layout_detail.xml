@@ -33,7 +33,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:load_image_detail_song="@{song.idSong}" />
+            app:load_image_detail_song="@{song.thumbnail}" />
 
         <TextView
             android:id="@+id/tv_title_item_offline"

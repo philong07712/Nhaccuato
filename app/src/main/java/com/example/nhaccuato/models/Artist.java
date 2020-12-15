@@ -9,7 +9,6 @@ public class Artist {
     private String id;
     private String thumbnail;
     private List<String> songsList;
-    private ArtistResponse artistResponse;
 
     public Artist() {
     }
@@ -32,10 +31,6 @@ public class Artist {
 
     public List<String> getSongsList() {
         return songsList;
-    }
-
-    public ArtistResponse getArtistResponse() {
-        return artistResponse;
     }
 
     public void setName(String name) {

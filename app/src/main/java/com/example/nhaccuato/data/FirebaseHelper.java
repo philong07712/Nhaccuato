@@ -12,10 +12,12 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class FirebaseHelper {
-    public static List<Song>  getAllSong(OnSongComplete listener) {
+    public static void  getAllSong(OnSongComplete listener) {
         List<Song> list = new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference docRef = db.collection("Song");
@@ -37,10 +39,9 @@ public class FirebaseHelper {
             }
             listener.onComplete(list);
         });
-        return list;
     }
 
-    public static List<Artist> getAllArtists(OnArtistComplete listener) {
+    public static void getAllArtists(OnArtistComplete listener) {
         List<Artist> list = new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference docRef = db.collection("Artist");
@@ -50,16 +51,22 @@ public class FirebaseHelper {
                     Artist artist = new Artist();
                     list.add(artist);
                     artist.setName((String) document.get("name"));
-                    artist.setYear_of_birth((int) document.get("birth"));
+                    artist.setYear_of_birth(((Long) document.get("birth")).intValue());
                     artist.setId((String) document.get("id"));
                     artist.setDescription((String) document.get("description"));
                     artist.setThumbnail((String) document.get("thumbnail"));
+
+//                    Map<String, String> songMap = (Map<String, String>) document.getData().get("songs");
+                    List<String> songs = (List<String>) document.getData().get("songs");
+//                    for (String key : songMap.keySet()) {
+//                        songs.add(songMap.get(key));
+//                    }
+                    artist.setSongsList(songs);
                 }
             } else {
                 task.getException().printStackTrace();
             }
             listener.onComplete(list);
         });
-        return list;
     }
 }

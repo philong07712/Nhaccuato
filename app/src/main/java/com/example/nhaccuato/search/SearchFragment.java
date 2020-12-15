@@ -6,7 +6,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,20 +26,11 @@ import com.example.nhaccuato.data.OnArtistComplete;
 import com.example.nhaccuato.data.OnSongComplete;
 import com.example.nhaccuato.databinding.FragmentSearchBinding;
 import com.example.nhaccuato.models.Artist;
-import com.example.nhaccuato.models.ArtistResponse;
 import com.example.nhaccuato.models.Song;
-import com.example.nhaccuato.models.SongResponse;
 import com.example.nhaccuato.play.PassData;
-import com.example.nhaccuato.search.SearchViewModel;
-
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class SearchFragment extends Fragment implements SearchTitleAdapter.SearchTiltleListener {
 

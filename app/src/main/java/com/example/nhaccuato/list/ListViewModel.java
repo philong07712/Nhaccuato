@@ -21,13 +21,9 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.nhaccuato.data.FirebaseHelper;
 import com.example.nhaccuato.data.OnSongComplete;
 import com.example.nhaccuato.models.Song;
-import com.example.nhaccuato.models.SongResponse;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class ListViewModel extends ViewModel {
     public Song song = new Song();

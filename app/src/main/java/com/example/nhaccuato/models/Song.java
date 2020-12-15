@@ -1,9 +1,5 @@
 package com.example.nhaccuato.models;
 
-import android.graphics.Bitmap;
-
-import com.example.nhaccuato.Utils.PathHelper;
-
 public class Song {
     private String nameSong;
     private String description;
@@ -13,7 +9,6 @@ public class Song {
     private String thumbnail;
     private String imgArtist;
     private String song;
-    private SongResponse songResponse;
 
     public Song() {
     }
@@ -26,23 +21,6 @@ public class Song {
         this.nameArtist = nameArtist;
         this.thumbnail = thumbnailUri;
     }
-
-    public void setUpSong(SongResponse songResponse) {
-        this.nameSong = songResponse.name;
-        this.description = songResponse.description;
-        this.idSong = songResponse.id;
-        this.idArtist = songResponse.artist.id;
-        this.nameArtist = songResponse.artist.name;
-        this.imgArtist = PathHelper.getFullUrl(idArtist, PathHelper.TYPE_ARTIST);
-        this.thumbnail = PathHelper.getFullUrl(idSong, PathHelper.TYPE_IMAGE);
-        this.song = PathHelper.getFullUrl(idSong, PathHelper.TYPE_SONG);
-    }
-
-    public void setSongResponse(SongResponse songResponse) {
-        this.songResponse = songResponse;
-        setUpSong(songResponse);
-    }
-
 
     public String getNameSong() {
         return nameSong;
@@ -108,7 +86,4 @@ public class Song {
         this.song = song;
     }
 
-    public SongResponse getSongResponse() {
-        return songResponse;
-    }
 }
